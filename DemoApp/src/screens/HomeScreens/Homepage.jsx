@@ -28,17 +28,17 @@ const Homepage = () => {
     {
       acctType: 'Basic Acct',
       acctNum: '0235691392',
-      acctBal: '7,245,438.54',
+      acctBal: '$ 7,245,438.54',
     },
     {
       acctType: 'Standard Acct',
       acctNum: '6235871392',
-      acctBal: '1,245,438.54',
+      acctBal: '$ 1,245,438.54',
     },
     {
       acctType: 'Premium Acct',
       acctNum: '6235835492',
-      acctBal: '1,245,438.54',
+      acctBal: '$ 1,245,438.54',
     },
   ];
 
@@ -72,7 +72,7 @@ const Homepage = () => {
             }}>
             <TouchableOpacity onPress={() => setShowBalance(!showBalance)}>
               <Text style={[styles.card_text, {fontSize: 13}]}>
-                Show Balance
+                {showBalance ? 'Hide Balance' : 'Show Balance'}
               </Text>
             </TouchableOpacity>
           </View>

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -39,6 +39,8 @@ const SignUp = ({navigation}) => {
     p2Field: '',
   });
 
+  const scrollViewRef = useRef();
+
   //DESTRUCTURED FORM DATA
   const {username, password, email, confirmPassword} = formData;
   const dispatch = useDispatch();
@@ -57,29 +59,49 @@ const SignUp = ({navigation}) => {
     // ERROR HANDLING FUNCTIONS
     if (password !== confirmPassword) {
       setErr({...err, noMatch: 'passwords do no match'});
+      scrollViewRef.current.scrollTo({
+        y: 10, // Adjust this value to scroll to the correct position
+        animated: true,
+      });
       setTimeout(() => {
         setErr({...err, noMatch: ''});
-      }, 2500);
+      }, 3000);
       return;
     } else if (!username && !password && !confirmPassword && !email) {
       setErr({...err, emptyField: 'please fill all required fields'});
+      scrollViewRef.current.scrollTo({
+        y: 0, // Adjust this value to scroll to the correct position
+        animated: true,
+      });
       setTimeout(() => {
         setErr({...err, emptyField: ''});
       }, 2500);
       return;
     } else if (!username && password && confirmPassword && email) {
       setErr({...err, userField: 'please input your username'});
+      scrollViewRef.current.scrollTo({
+        y: 1, // Adjust this value to scroll to the correct position
+        animated: true,
+      });
       setTimeout(() => {
         setErr({...err, userField: ''});
       }, 2500);
       return;
     } else if (username && !password && email) {
+      scrollViewRef.current.scrollTo({
+        y: 10, // Adjust this value to scroll to the correct position
+        animated: true,
+      });
       setErr({...err, p1Field: 'please input your password'});
       setTimeout(() => {
         setErr({...err, p1Field: ''});
       }, 2500);
       return;
     } else if (username && password && !email) {
+      scrollViewRef.current.scrollTo({
+        y: 5, // Adjust this value to scroll to the correct position
+        animated: true,
+      });
       setErr({...err, p2Field: 'please input a valid email address'});
       setTimeout(() => {
         setErr({...err, emField: ''});
@@ -95,6 +117,10 @@ const SignUp = ({navigation}) => {
         // console.log(formValue);
         dispatch(createUser(formValue));
       } else {
+        scrollViewRef.current.scrollTo({
+          y: 10, // Adjust this value to scroll to the correct position
+          animated: true,
+        });
         setErr({
           ...err,
           p1Field:
@@ -124,13 +150,20 @@ const SignUp = ({navigation}) => {
         dispatch(reset());
       }, 2500);
     }
-  }, [isError, isSuccess]);
+
+    if (message) {
+      scrollViewRef.current.scrollTo({
+        y: 0, // Adjust this value to scroll to the correct position
+        animated: true,
+      });
+    }
+  }, [isError, isSuccess, message]);
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar hidden />
       <KeyboardAvoidingView behavior="height">
-        <ScrollView>
+        <ScrollView ref={scrollViewRef}>
           <View style={styles.topCurve}>
             <Text
               style={{
@@ -151,6 +184,7 @@ const SignUp = ({navigation}) => {
               style={{
                 fontSize: 15,
                 color: 'red',
+                textTransform: 'capitalize',
                 textAlign: 'center',
                 fontFamily: 'Inter-Regular',
               }}>
@@ -158,63 +192,11 @@ const SignUp = ({navigation}) => {
             </Text>
           )}
 
-          {/* EMPTY USERNAME FIELDS ERROR MESSAGE */}
-          {err.userField && (
-            <Text
-              style={{
-                fontSize: 15,
-                color: 'red',
-                textAlign: 'center',
-                fontFamily: 'Inter-Regular',
-              }}>
-              {err.userField}
-            </Text>
-          )}
-
-          {/* EMPTY P1 FIELDS ERROR MESSAGE */}
-          {err.p1Field && (
-            <Text
-              style={{
-                fontSize: 15,
-                color: 'red',
-                textAlign: 'center',
-                fontFamily: 'Inter-Regular',
-              }}>
-              {err.p1Field}
-            </Text>
-          )}
-
-          {/* EMPTY P2 FIELDS ERROR MESSAGE */}
-          {err.p2Field && (
-            <Text
-              style={{
-                fontSize: 15,
-                color: 'red',
-                textAlign: 'center',
-                fontFamily: 'Inter-Regular',
-              }}>
-              {err.p2Field}
-            </Text>
-          )}
-
-          {/* PASSWORD MISMATCH ERROR MESSAGE */}
-          {err.noMatch && (
-            <Text
-              style={{
-                fontSize: 15,
-                color: 'red',
-                textAlign: 'center',
-                fontFamily: 'Inter-Regular',
-              }}>
-              {err.noMatch}
-            </Text>
-          )}
-
           {/* API ERROR MESSAGE */}
           {message && (
             <Text
               style={{
-                fontSize: 15,
+                fontSize: 13,
                 color: 'red',
                 textAlign: 'center',
                 fontFamily: 'Inter-Regular',
@@ -225,6 +207,19 @@ const SignUp = ({navigation}) => {
 
           {/* FORM SECTION STARTS HERE */}
           <View style={styles.formStyle}>
+            {/* EMPTY USERNAME FIELDS ERROR MESSAGE */}
+            {err.userField && (
+              <Text
+                style={{
+                  fontSize: 13,
+                  color: 'red',
+                  textTransform: 'capitalize',
+                  textAlign: 'center',
+                  fontFamily: 'Inter-Regular',
+                }}>
+                {err.userField}
+              </Text>
+            )}
             <View style={{marginVertical: 10}}>
               <Text style={{fontSize: 13, marginVertical: 5, color: '#262626'}}>
                 Username
@@ -265,6 +260,34 @@ const SignUp = ({navigation}) => {
               />
             </View>
 
+            {/* PASSWORD MISMATCH ERROR MESSAGE */}
+            {err.noMatch && (
+              <Text
+                style={{
+                  fontSize: 13,
+                  color: 'red',
+                  textTransform: 'capitalize',
+                  textAlign: 'center',
+                  fontFamily: 'Inter-Regular',
+                }}>
+                {err.noMatch}
+              </Text>
+            )}
+
+            {/* EMPTY P1 FIELDS ERROR MESSAGE */}
+            {err.p1Field && (
+              <Text
+                style={{
+                  fontSize: 13,
+                  color: 'red',
+                  textTransform: 'capitalize',
+                  textAlign: 'center',
+                  fontFamily: 'Inter-Regular',
+                }}>
+                {err.p1Field}
+              </Text>
+            )}
+
             <View style={{marginVertical: 10, position: 'relative'}}>
               <Text style={{fontSize: 13, marginVertical: 5, color: '#262626'}}>
                 Password
@@ -278,7 +301,9 @@ const SignUp = ({navigation}) => {
                   styles.input_field,
                   {
                     borderColor:
-                      err.emptyField || err.p1Field ? 'red' : Colors.secondary,
+                      err.emptyField || err.p1Field || err.noMatch
+                        ? 'red'
+                        : Colors.secondary,
                   },
                 ]}
               />
@@ -300,6 +325,19 @@ const SignUp = ({navigation}) => {
               />
             </View>
 
+            {/* EMPTY P2 FIELDS ERROR MESSAGE */}
+            {err.p2Field && (
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: 'red',
+                  textTransform: 'capitalize',
+                  textAlign: 'center',
+                  fontFamily: 'Inter-Regular',
+                }}>
+                {err.p2Field}
+              </Text>
+            )}
             <View style={{marginVertical: 10, position: 'relative'}}>
               <Text style={{fontSize: 13, marginVertical: 5, color: '#262626'}}>
                 Confirm Password
@@ -313,7 +351,9 @@ const SignUp = ({navigation}) => {
                   styles.input_field,
                   {
                     borderColor:
-                      err.emptyField || err.p2Field ? 'red' : Colors.secondary,
+                      err.emptyField || err.p2Field || err.noMatch
+                        ? 'red'
+                        : Colors.secondary,
                   },
                 ]}
               />
